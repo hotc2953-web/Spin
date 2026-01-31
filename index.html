@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Mega Spin</title>
+    <style>
+        body {
+            background: #0f0c29;
+            background: linear-gradient(to bottom, #24243e, #302b63, #0f0c29);
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .wheel-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+        }
+        .pointer {
+            width: 0; 
+            height: 0; 
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #ff0000;
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99;
+        }
+        #wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+            transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
+        }
+        .spin-btn {
+            margin-top: 40px;
+            padding: 12px 50px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .spin-btn:disabled { background: #555; }
+        #result { margin-top: 20px; font-size: 20px; color: #ffd700; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2 style="letter-spacing: 2px;">🔥 MEGA SPIN & WIN 🔥</h2>
+
+    <div class="wheel-container">
+        <div class="pointer"></div>
+        <img id="wheel" src="https://i.ibb.co/mH6pXv8/lucky-wheel.png" alt="wheel">
+    </div>
+
+    <button id="spinBtn" class="spin-btn" onclick="startSpin()">SPIN NOW</button>
+    <p id="result">Kismat Azmaiye!</p>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let wheel = document.getElementById('wheel');
+        let btn = document.getElementById('spinBtn');
+        let result = document.getElementById('result');
+        let currentRotation = 0;
+
+        function startSpin() {
+            btn.disabled = true;
+            result.innerText = "Ghoom raha hai...";
+            
+            // Random spin logic
+            let extraDeg = Math.floor(3000 + Math.random() * 3000); 
+            currentRotation += extraDeg;
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            setTimeout(() => {
+                let wonPoints = Math.floor(Math.random() * 10) + 1;
+                result.innerText = `🎊 Jeet Gaye: ${wonPoints} Points!`;
+                
+                // Telegram Bot ko data bhejna
+                setTimeout(() => {
+                    tg.sendData(JSON.stringify({ points: wonPoints }));
+                    tg.close();
+                }, 2000);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
